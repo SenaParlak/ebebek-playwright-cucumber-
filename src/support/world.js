@@ -2,6 +2,7 @@ import { setWorldConstructor, World } from '@cucumber/cucumber';
 import { LoginPage } from '../pages/LoginPage.js';
 import { SearchPage } from '../pages/SearchPage.js';
 import { CartPage } from '../pages/CartPage.js';
+import { CartStatePage } from '../pages/CartStatePage.js';
 
 class CustomWorld extends World {
   constructor(options) {
@@ -15,12 +16,13 @@ class CustomWorld extends World {
     this.testData = {};
   }
 
-  initializePages() {
-    this.pages = {
-      loginPage: new LoginPage(this.page),
-      searchPage: new SearchPage(this.page),
-      cartPage: new CartPage(this.page)
-    };
+initializePages() {
+  this.pages = {
+    loginPage: new LoginPage(this.page),
+    searchPage: new SearchPage(this.page),
+    cartPage: new CartPage(this.page),
+    cartStatePage: new CartStatePage(this.page)
+  };
   }
 }
 
