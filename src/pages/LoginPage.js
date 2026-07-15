@@ -25,7 +25,9 @@ export class LoginPage {
   async login(email, password) {
     await this.emailInput.fill(email);
     await this.emailLoginButton.click();
+
     await expect(this.passwordInput).toBeVisible();
+
     await this.passwordInput.fill(password);
     await this.loginButton.click();
   }
@@ -33,5 +35,23 @@ export class LoginPage {
   async verifyLoginSuccess() {
     await this.accountMenu.click();
     await expect(this.logoutButton).toBeVisible();
+  }
+
+  async logout() {
+    await expect(this.accountMenu).toBeVisible();
+
+    if (!(await this.logoutButton.isVisible())) {
+      await this.accountMenu.click();
+    }
+
+    await expect(this.logoutButton).toBeVisible();
+    await this.logoutButton.click();
+  }
+
+  async verifyLogoutSuccess() {
+    await expect(this.logoutButton).toBeHidden();
+
+    await this.accountMenu.click();
+    await expect(this.loginWithEmail).toBeVisible();
   }
 }

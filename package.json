@@ -5,10 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "cucumber-js \"features/**/*.feature\" --import \"src/support/**/*.js\" --import \"src/steps/**/*.js\"",
-    "test:login": "cucumber-js \"features/**/*.feature\" --import \"src/support/**/*.js\" --import \"src/steps/**/*.js\" --tags \"@login\"",
-    "test:parallel": "cucumber-js \"features/**/*.feature\" --import \"src/support/**/*.js\" --import \"src/steps/**/*.js\" --parallel 2",
     "test:headed": "cross-env HEADLESS=false cucumber-js \"features/**/*.feature\" --import \"src/support/**/*.js\" --import \"src/steps/**/*.js\"",
-    "test:smoke": "cucumber-js \"features/**/*.feature\" --import \"src/support/**/*.js\" --import \"src/steps/**/*.js\" --tags \"@smoke\"",
+    "test:parallel": "cucumber-js \"features/**/*.feature\" --import \"src/support/**/*.js\" --import \"src/steps/**/*.js\" --parallel 2",
     "allure:generate": "allure generate allure-results --clean -o allure-report",
     "allure:open": "allure open allure-report",
     "report": "npm run allure:generate && npm run allure:open"
