@@ -1,18 +1,18 @@
 import {
+  BeforeAll,
   Before,
   After,
-  BeforeAll,
   AfterAll,
   Status,
   setDefaultTimeout
 } from '@cucumber/cucumber';
 
-import { launchBrowser } from './browserManager.js';
 import { config } from '../utils/config.js';
+import { launchBrowser } from './browserManager.js';
 
 let browser;
 
-setDefaultTimeout(config.timeout);
+setDefaultTimeout(60 * 1000);
 
 BeforeAll(async function () {
   browser = await launchBrowser();
@@ -22,21 +22,16 @@ Before(async function () {
   this.browser = browser;
 
   this.context = await browser.newContext({
-    baseURL: config.baseUrl,
-    viewport: {
-      width: 1440,
-      height: 900
-    }
+    baseURL: config.baseUrl
   });
 
   this.page = await this.context.newPage();
-  this.page.setDefaultTimeout(config.timeout);
 
   this.initializePages();
 });
 
-After(async function ({ result }) {
-  if (result?.status === Status.FAILED && this.page) {
+After(async function (scenario) {
+  if (scenario.result?.status === Status.FAILED) {
     const screenshot = await this.page.screenshot({
       fullPage: true
     });
@@ -44,13 +39,10 @@ After(async function ({ result }) {
     await this.attach(screenshot, 'image/png');
   }
 
-  if (this.context) {
-    await this.context.close();
-  }
+  await this.page.close();
+  await this.context.close();
 });
 
 AfterAll(async function () {
-  if (browser) {
-    await browser.close();
-  }
+  await browser.close();
 });

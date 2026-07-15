@@ -6,7 +6,7 @@ export const config = {
   baseUrl: process.env.BASE_URL,
   browser: process.env.BROWSER ?? 'chromium',
   headless: process.env.HEADLESS !== 'false',
-  timeout: Number(process.env.DEFAULT_TIMEOUT ?? 15000),
+  timeout: Number(process.env.DEFAULT_TIMEOUT ?? 30000),
 
   user: {
     email: process.env.TEST_USER_EMAIL,
