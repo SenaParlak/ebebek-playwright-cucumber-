@@ -9,9 +9,16 @@ When('User navigates to the login page', async function () {
   await this.pages.loginPage.goToLoginPage();
 });
 
-When('User logs in with valid credentials', async function () {
-  await this.pages.loginPage.login(
+When('User logs in with valid email credentials', async function () {
+  await this.pages.loginPage.loginWithEmail(
     config.user.email,
+    config.user.password
+  );
+});
+
+When('User logs in with valid phone credentials', async function () {
+  await this.pages.loginPage.loginWithPhone(
+    config.user.phone,
     config.user.password
   );
 });

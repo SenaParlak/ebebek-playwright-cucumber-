@@ -5,9 +5,10 @@ export class LoginPage {
     this.page = page;
 
     this.accountMenu = page.locator('#lnkMyAccount');
-    this.loginWithEmail = page.locator('#btnLoginWithEmail');
+    this.loginWithEmailButton = page.locator('#btnLoginWithEmail');
     this.emailInput = page.locator('#txtEmail');
-    this.emailLoginButton = page.locator("button[type='submit']");
+    this.phoneInput = page.locator('#txtPhoneNumberMobile');
+    this.emailOrPhoneLoginButton = page.locator("button[type='submit']");
     this.passwordInput = page.locator('#txtPassword');
     this.loginButton = page.locator('#btnSubmitPassword');
     this.logoutButton = page.locator('#lnkSignOutNavNode');
@@ -18,22 +19,46 @@ export class LoginPage {
   }
 
   async goToLoginPage() {
+    await expect(this.accountMenu).toBeVisible();
     await this.accountMenu.click();
-    await this.loginWithEmail.click();
   }
 
-  async login(email, password) {
+  async loginWithEmail(email, password) {
+    await expect(this.loginWithEmailButton).toBeVisible();
+    await this.loginWithEmailButton.click();
+
+    await expect(this.emailInput).toBeVisible();
     await this.emailInput.fill(email);
-    await this.emailLoginButton.click();
+
+    await expect(this.emailOrPhoneLoginButton).toBeVisible();
+    await this.emailOrPhoneLoginButton.click();
 
     await expect(this.passwordInput).toBeVisible();
-
     await this.passwordInput.fill(password);
+
+    await expect(this.loginButton).toBeVisible();
+    await this.loginButton.click();
+  }
+
+  async loginWithPhone(phone, password) {
+    await expect(this.phoneInput).toBeVisible();
+
+    await this.phoneInput.fill(phone);
+
+    await expect(this.emailOrPhoneLoginButton).toBeVisible();
+    await this.emailOrPhoneLoginButton.click();
+
+    await expect(this.passwordInput).toBeVisible();
+    await this.passwordInput.fill(password);
+
+    await expect(this.loginButton).toBeVisible();
     await this.loginButton.click();
   }
 
   async verifyLoginSuccess() {
+    await expect(this.accountMenu).toBeVisible();
     await this.accountMenu.click();
+
     await expect(this.logoutButton).toBeVisible();
   }
 
@@ -49,9 +74,9 @@ export class LoginPage {
   }
 
   async verifyLogoutSuccess() {
-    await expect(this.logoutButton).toBeHidden();
-
+    await expect(this.accountMenu).toBeVisible();
     await this.accountMenu.click();
-    await expect(this.loginWithEmail).toBeVisible();
+
+    await expect(this.loginWithEmailButton).toBeVisible();
   }
 }
