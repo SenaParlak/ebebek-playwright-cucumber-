@@ -42,7 +42,6 @@ export class LoginPage {
 
   async loginWithPhone(phone, password) {
     await expect(this.phoneInput).toBeVisible();
-
     await this.phoneInput.fill(phone);
 
     await expect(this.emailOrPhoneLoginButton).toBeVisible();
@@ -55,11 +54,98 @@ export class LoginPage {
     await this.loginButton.click();
   }
 
+  async attemptEmailLogin(email, password) {
+    await expect(this.loginWithEmailButton).toBeVisible();
+    await this.loginWithEmailButton.click();
+
+    await expect(this.emailInput).toBeVisible();
+    await this.emailInput.fill(email);
+
+    if (!email) {
+      await this.emailInput.blur();
+      return;
+    }
+
+    await expect(this.emailOrPhoneLoginButton).toBeVisible();
+    await this.emailOrPhoneLoginButton.click();
+
+    const isPasswordVisible = await this.passwordInput
+      .waitFor({
+        state: 'visible',
+        timeout: 5000
+      })
+      .then(() => true)
+      .catch(() => false);
+
+    if (!isPasswordVisible) {
+      return;
+    }
+
+    await this.passwordInput.fill(password);
+
+    if (!password) {
+      await this.passwordInput.blur();
+      return;
+    }
+
+    await expect(this.loginButton).toBeVisible();
+    await this.loginButton.click();
+  }
+
   async verifyLoginSuccess() {
     await expect(this.accountMenu).toBeVisible();
     await this.accountMenu.click();
 
     await expect(this.logoutButton).toBeVisible();
+  }
+
+async verifyLoginErrorMessage(expectedError) {
+  const errorMessage = this.page
+    .getByText(expectedError, { exact: false })
+    .filter({ visible: true })
+    .first();
+
+  await expect(errorMessage).toBeVisible();
+
+  const actualMessage = await errorMessage.innerText();
+
+  if (
+    expectedError.includes(
+      'Kullanıcı adı veya parolanız hatalıdır'
+    )
+  ) {
+    expect(actualMessage).toMatch(
+      /Kalan deneme hakkınız\s*:\s*\d+/
+    );
+  }
+}
+
+  async verifyRegisterPage(expectedValue) {
+    await expect(
+      this.page.getByRole('heading', { name: expectedValue })
+    ).toBeVisible();
+  }
+
+  async verifyNegativeLoginResult(expectedResult, expectedValue) {
+    const resultAssertions = {
+      error: async () => {
+        await this.verifyLoginErrorMessage(expectedValue);
+      },
+
+      register_page: async () => {
+        await this.verifyRegisterPage(expectedValue);
+      }
+    };
+
+    const assertion = resultAssertions[expectedResult];
+
+    if (!assertion) {
+      throw new Error(
+        `Unsupported expected result type: ${expectedResult}`
+      );
+    }
+
+    await assertion();
   }
 
   async logout() {
