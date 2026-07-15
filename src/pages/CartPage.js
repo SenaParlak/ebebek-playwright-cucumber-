@@ -183,11 +183,17 @@ export class CartPage {
       )
       .toBeGreaterThan(1);
 
+    const initialRemoveButtonCount = await this.getVisibleLocatorCount(
+      this.removeButtons
+    );
+
     await this.clickVisibleLocatorByIndex(this.removeButtons, 1);
 
     await this.confirmRemoveFromSidePanel();
 
-    await this.waitForSelectedProductCount(1);
+    await this.waitForVisibleRemoveButtonCount(
+      initialRemoveButtonCount - 1
+    );
 
     await this.calculateExpectedSubtotalFromRemainingProduct();
   }
@@ -208,21 +214,13 @@ export class CartPage {
     await this.page.waitForLoadState('domcontentloaded').catch(() => {});
   }
 
-  async waitForSelectedProductCount(expectedCount) {
+  async waitForVisibleRemoveButtonCount(expectedCount) {
     await expect
       .poll(
-        async () => {
-          const pageText = await this.page.locator('body').innerText();
-
-          const match = pageText.match(
-            /Seçili\s*Ürünler\s*\((\d+)\)/i
-          );
-
-          return match ? Number(match[1]) : null;
-        },
+        async () => this.getVisibleLocatorCount(this.removeButtons),
         {
           timeout: 15000,
-          message: `Expected selected product count to be ${expectedCount}`
+          message: `Expected visible remove button count to be ${expectedCount}`
         }
       )
       .toBe(expectedCount);
