@@ -1,4 +1,4 @@
-@login @negative
+@negativeLogin
 Feature: Negative user login
 
   Scenario Outline: Unsuccessful login with invalid email credentials
